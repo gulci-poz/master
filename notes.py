@@ -192,3 +192,297 @@ t.render(Context({'p': p}))
 # - separacja logiki od designu
 # - DRY
 # - bezpieczeństwo - zakaz wykonywania kodu
+
+# if - zmienna istnieje & nie jest pusta & nie jest równa False
+# trzeba zamykać za pomocą endif, inaczej TemplateSyntaxError
+
+# będziemy mieli kilka \n w stringu
+raw_t = """
+    {% if today_is_weekend %}
+        <p>Welcome to the weekend!</p>
+    {% else %}
+        <p>Get back to work.</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+c = Context({'today_is_weekend': True})
+r = t.render(c)
+print(r)
+
+# dowolna ilość elif
+raw_t = """
+    {% if athlete_list %}
+        <p>Number of athletes: {{ athlete_list|length }}</p>
+    {% elif athlete_in_locker_room_list %}
+        <p>Athletes should be out of the locker room soon!</p>
+    {% else %}
+        <p>No athletes.</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+# c = Context({'athlete_list': ['athlete1']})
+# c = Context({'athlete_in_locker_room_list': ['athlete1']})
+# c = Context()
+c = Context({'athlete_list': []})
+r = t.render(c)
+print(r)
+
+# możemy używać and, or, not
+raw_t = """
+    {% if athlete_list and coach_list %}
+        <p>athletes and coaches</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+c = Context({'athlete_list': ['athlete1'], 'coach_list': ['coach1']})
+r = t.render(c)
+print(r)
+
+raw_t = """
+    {% if not athlete_list %}
+        <p>no athletes</p>
+    {% endif %}
+    {% if athlete_list or coach_list %}
+        <p>athletes or coaches</p>
+    {% endif %}
+    {% if not athlete_list or coach_list %}
+        <p>no athletes or coaches</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+c = Context({'athlete_list': [], 'coach_list': ['coach1']})
+r = t.render(c)
+print(r)
+
+# and ma pierwszeństwo (precedence) przed or
+raw_t = """
+    {% if athlete_list and coach_list or cheerleader_list %}
+        <p>athletes and coaches, or maybe some cheerleaders</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+# c = Context({'athlete_list': ['athlete1'], 'coach_list': ['coach1'],
+#              'cheerleader_list': []})
+c = Context({'athlete_list': [], 'coach_list': ['coach1'],
+             'cheerleader_list': []})
+r = t.render(c)
+print(r)
+
+# użycie nawiasów w if jest niedozwolone
+# można użyć zagnieżdżonych ifów do określenia pierwszeństwa operatorów
+# lub wykonać logikę poza widokiem i przekazać rezultat do szablonu
+
+# można wiele razy użyć tego samego operatora,
+# kombinacja różnych logicznych operatorów również przechodzi
+raw_t = """
+    {% if a and b or c and d %}
+        <p>allowed</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+c = Context({'a': '1', 'b': '2', 'c': '', 'd': ''})
+r = t.render(c)
+print(r)
+
+# in/not in
+raw_t = """
+    {% if "bc" in abc %}
+        <p>bc in abc</p>
+    {% endif %}
+    {% if "user3" not in users %}
+        <p>no user3</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+c = Context({'abc': 'abc', 'users': ['user1', 'user2']})
+r = t.render(c)
+print(r)
+
+# is/is not
+raw_t = """
+    {% if var is True %}
+        <p>var is True</p>
+    {% endif %}
+    {% if var is not None %}
+        <p>var is not None</p>
+    {% endif %}
+    {% if name is None %}
+        <p>name is None</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+c = Context({'var': True, 'name': 'john'})
+r = t.render(c)
+print(r)
+
+# for
+raw_t = """
+    <ul>
+        {% for user in users %}
+            <li>{{ user }}</li>
+        {% endfor %}
+    </ul>
+    <ul>
+        {% for user in users reversed %}
+            <li>{{ user }}</li>
+        {% endfor %}
+    </ul>
+"""
+t = Template(raw_t)
+c = Context({'users': ['john', 'norma', 'hal']})
+r = t.render(c)
+print(r)
+
+# zagnieżdżanie for
+raw_t = """
+    {% for user in users %}
+        <h3>{{ user.name }}</h3>
+        <ul>
+            {% for lang in user.langs %}
+                <li>{{ lang }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+"""
+t = Template(raw_t)
+c = Context(
+    {
+        'users': [
+            {'name': 'john', 'langs': ['python', 'js']},
+            {'name': 'hal', 'langs': ['python', 'c']}
+        ]
+    }
+)
+r = t.render(c)
+print(r)
+
+# lista list, odpakowujemy wartości z podlist
+raw_t = """
+    {% for x, y in points %}
+        <p>point ({{ x }}, {{ y }})</p>
+    {% endfor %}
+"""
+t = Template(raw_t)
+c = Context({'points': [[1, 2], [3, 4], [5, 6]]})
+r = t.render(c)
+print(r)
+
+# słownik
+raw_t = """
+    {% for key, value in data.items %}
+        <p>{{ key }} - {{ value }}</p>
+    {% endfor %}
+"""
+t = Template(raw_t)
+c = Context({'data': {'name': 'john', 'age': 33, 'prof': 'developer'}})
+r = t.render(c)
+print(r)
+
+# warto sprawdzić, czy lista nie jest pusta
+raw_t = """
+    {% if data %}
+        <ul>
+            {% for item in data %}
+                <li>{{ item }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}    
+        <p>no food</p>
+    {% endif %}
+"""
+t = Template(raw_t)
+# c = Context({'data': ['milk', 'toast', 'honey']})
+c = Context({'data': []})
+r = t.render(c)
+print(r)
+
+# identyczne działanie - tag empty
+raw_t = """
+    <ul>
+        {% for item in data %}
+            <li>{{ item }}</li>
+        {% empty %}
+            <li>no food</li>
+        {% endfor %}
+    </ul>
+"""
+t = Template(raw_t)
+c = Context({'data': []})
+r = t.render(c)
+print(r)
+
+# nie ma analogów break i continue
+
+# dla każdego segmentu for mamy dostęp do zmiennej forloop i jej atrybutów
+# counter - ilość wejść do pętli, indeksowanie od 1
+# counter0 - indeksowanie od 0
+# revcounter - ilość pozostałych obiegów pętli, od całkowitej liczby elementów
+# revcounter0 - realne kroki do końca
+# first, last - True, jeśli jesteśmy w pierwszym/ostatnim obiegu pętli
+raw_t = """
+    <ul>
+        {% for item in data %}
+            {% if forloop.first %}
+                <li class="first">
+            {% else %}
+                <li>
+            {% endif %}
+            {{ forloop.revcounter0 }}: {{ item }}</li>
+        {% empty %}
+            <li>no food</li>
+        {% endfor %}
+    </ul>
+"""
+t = Template(raw_t)
+c = Context({'data': ['milk', 'toast', 'honey']})
+r = t.render(c)
+print(r)
+
+# last
+raw_t = """
+    {% for link in links %}
+        {{ link }}{% if not forloop.last %} | {% endif %}
+    {% endfor %}
+"""
+t = Template(raw_t)
+c = Context({'links': ['link1', 'link2', 'link3']})
+r = t.render(c)
+print(r)
+
+# parentloop
+raw_t = """
+    {% for user in users %}
+        <h3>{{ user.name }}</h3>
+        <ul>
+            {% for lang in user.langs %}
+                <li>user {{ forloop.parentloop.counter }}: {{ lang }}</li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
+"""
+t = Template(raw_t)
+c = Context(
+    {
+        'users': [
+            {'name': 'john', 'langs': ['python', 'js']},
+            {'name': 'hal', 'langs': ['python', 'c']}
+        ]
+    }
+)
+r = t.render(c)
+print(r)
+
+# ifequal/ifnotequal - przestarzałe, używamy operatorów == lub !=
+
+# komentarze {# komentarz #} - jednoliniowe
+# wydajność parsowania  jest wtedy większa
+# wieloliniowy komentarz {# #} zostanie wyrenderowany jako normalny tekst
+
+# właściwy wieloliniowy komentarz,
+# może zawierać opcjonalną notkę z wyjaśnieniami:
+raw_t = """
+    {% comment "optional notes" %}
+    {% endcomment %}
+"""
+
+# komentarze nie mogą być zagnieżdżane
