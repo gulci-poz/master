@@ -484,5 +484,30 @@ raw_t = """
     {% comment "optional notes" %}
     {% endcomment %}
 """
+# redefinicja bez przyczyny ;)
+print(raw_t)
 
 # komentarze nie mogą być zagnieżdżane
+
+# filtry - zmiana wartości zmiennej przed wyświetleniem
+raw_t = """
+    {{ name|upper }}
+    {# chainowanie #}
+    {{ names|first|lower }}
+    {# argument po dwukropku i w cudzysłowiu #}
+    {{ description|truncatewords:"3" }}
+    {# dodaje backslash przed \ ' " #} 
+    {{ value|addslashes }}
+    {# 0 jeśli zmienna nie jest zdefiniowana #}
+    {{ names|length }}
+    {{ name|length }}
+    {{ date|date:"F j, Y" }}
+"""
+t = Template(raw_t)
+c = Context({'name': 'john',
+             'names': ['JOE', 'hal', 'pam'],
+             'description': 'Very long and versatile description',
+             'value': '\\backslash - \'quote - "d-quote',
+             'date': date(2017, 6, 2)})
+r = t.render(c)
+print(r)
