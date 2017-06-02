@@ -30,8 +30,7 @@ def hours_ahead(request, offset):
 
 
 def order_notice(request):
-    t = Template(
-        """
+    t_raw = """
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -59,8 +58,10 @@ def order_notice(request):
         <p>Sincerely,<br><em>{{ company }}</em></p>
         </body>
         </html>
-        """
-    )
+    """
+
+    t = Template(t_raw)
+
     c = Context({
         'person_name': 'John Doe',
         'company': 'gooseberry',
@@ -68,5 +69,7 @@ def order_notice(request):
         'item_list': ['scissors', 'paper', 'rock'],
         'ordered_warranty': True,
     })
-    rt = t.render(c)
-    return HttpResponse(rt)
+
+    t_rendered = t.render(c)
+
+    return HttpResponse(t_rendered)
