@@ -188,11 +188,6 @@ t.render(Context({'p': p}))
 # to używana jest wartość string_if_invalid
 # błąd w szablonie nie powoduje unieruchomienia aplikacji
 
-# zadania szablonów:
-# - separacja logiki od designu
-# - DRY
-# - bezpieczeństwo - zakaz wykonywania kodu
-
 # if - zmienna istnieje & nie jest pusta & nie jest równa False
 # trzeba zamykać za pomocą endif, inaczej TemplateSyntaxError
 
@@ -511,3 +506,14 @@ c = Context({'name': 'john',
              'date': date(2017, 6, 2)})
 r = t.render(c)
 print(r)
+
+# DTL philosophies:
+# 1. Separate logic from presentation.
+# 2. Discourage redundancy.
+# 3. Be decoupled from HTML.
+# 4. XML is bad.
+# 5. Asume designer competence.
+# 6. Treat whitespace obviously (display it).
+# 7. Don't invent a programming language.
+# 8. Ensure safety and security.
+# 9. Extensible.
