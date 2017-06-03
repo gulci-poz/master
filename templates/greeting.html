@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Greeting</title>
+</head>
+<body>
+<h1>Hello</h1>
+{% comment %}
+cudzysłów ' lub " albo zmienna
+może zawierać ścieżkę względną ./ lub ../
+w inkludowanym szablonie będą dostępne zmienne z kontekstu
+w razie brazku szablonu w DEBUG dostaniemy TemplateDoesNotExist
+poza DEBUG - silent fail - nic się nie wyświetli w miejscu taga
+nie ma zapisu stanu między szablonami (informacja o share)
+każdy include to oddzielny proces renderowania szablonu
+bloki są przetwarzane przez inkludowaniem
+{% endcomment %}
+{% include included_template %}
+</body>
+</html>

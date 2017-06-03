@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 
 from django.http import Http404, HttpResponse
+from django.shortcuts import render
 from django.template import Context, Template
+from django.template.loader import get_template
 
 
 def hello(request):
@@ -73,3 +75,33 @@ def order_notice(request):
     t_rendered = t.render(c)
 
     return HttpResponse(t_rendered)
+
+
+def current_datetime_get_template(request):
+    now = datetime.now()
+
+    # dostajemy skompilowany obiekt Template
+    # jest to obiekt django.template.backends.base.Template
+    # (zależny od backendu)
+    # jest to inny obiekt niż django.template.Template
+    # tutaj metoda render przyjmuje słownik, a nie Context
+    # szukanie po APP_DIRS i DIRS (w porządku)
+    # nie znalezienie szablonu - TemplateDoesNotExist
+    t = get_template('current_datetime_new.html')
+
+    html = t.render({'current_date': now})
+    return HttpResponse(html)
+
+
+def current_datetime_render_shortcut(request):
+    now = datetime.now()
+    # mamy wszystkie kroki: template, context (opcjonalny), render
+    # i http response, który jest zwracany przez render()
+    # render() to wrapper na get_template()
+    return render(request, 'current_datetime_new.html', {'current_date': now})
+
+
+def greeting(request):
+    return render(request, 'greeting.html',
+                  {'included_template': 'includes/nav.html',
+                   'current_section': 'greeting'})

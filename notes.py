@@ -58,6 +58,8 @@
 # interaktywny interpreter wyświetli reprezentację stringa (będą znaki \n)
 # jeśli chcemy wartość do wydrukowania (nowe linie), to trzeba użyć print
 
+# django ma template backend API, klasy template engine implementują to API
+
 from django.template import Context, Template
 from datetime import date
 
