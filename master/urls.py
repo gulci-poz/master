@@ -3,7 +3,8 @@ from django.contrib import admin
 
 from .views import (hello, current_datetime, hours_ahead, order_notice,
                     current_datetime_get_template,
-                    current_datetime_render_shortcut, greeting)
+                    current_datetime_render_shortcut, greeting, utilities_time,
+                    utilities_time_ahead)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -15,4 +16,6 @@ urlpatterns = [
     url(r'^time/get-template/$', current_datetime_get_template),
     url(r'^time/render-shortcut/$', current_datetime_render_shortcut),
     url(r'^greeting/$', greeting),
+    url(r'^utilities/time/$', utilities_time),
+    url(r'^utilities/time/plus/(\d{1,2})/$', utilities_time_ahead),
 ]

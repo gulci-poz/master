@@ -519,3 +519,24 @@ print(r)
 # 7. Don't invent a programming language.
 # 8. Ensure safety and security.
 # 9. Extensible.
+
+# dziedziczenie:
+# include definiuje wspólne fragmenty
+# dziedziczenie definiuje różniące się fragmenty
+# silnik widzi extends i wczytuje bazę,
+# znalezione bloki próbuje zamienić na bloki z child,
+# po tej zamianie następuje renderowanie
+# jeśli nie nadpiszemy bloku z bazy, to nie jest on zmieniany (fall-back)
+# stanowi on zawartość domyślną
+# przy definiowaniu bloku w child robimy override bloku z bazy
+# dodawanie do bloku za pomocą {{ block.super }}, silnik wstawia wyrenderowany
+# blok z bazy i dopisuje do niego część z child
+# mamy osobny proces renderowania - jak z include (notatki z greeting.html)
+# dziedziczenie nie ma wpływu na kontekst
+# kontekst jest pamiętany również w inkludowanym szablonie
+# nie możemy duplikować nazw bloków
+# 3-level approach: baza - szablon sekcji - szablon typu strony
+# extends musi być pierwszym tagiem
+# argumentem do extends może być zmienna
+# (dynamiczne ładowanie szablonu w runtime)
+# mamy szukanie po APP_DIRS i DIRS

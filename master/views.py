@@ -105,3 +105,20 @@ def greeting(request):
     return render(request, 'greeting.html',
                   {'included_template': 'includes/nav.html',
                    'current_section': 'greeting'})
+
+
+def utilities_time(request):
+    now = datetime.now()
+    return render(request, 'utilities/time.html',
+                  {'current_section': 'time', 'current_date': now})
+
+
+def utilities_time_ahead(request, offset):
+    try:
+        offset = int(offset)
+    except ValueError:
+        raise Http404()
+
+    time_ahead = datetime.now() + timedelta(hours=offset)
+    return render(request, 'utilities/time_ahead.html',
+                  {'current_section': 'time ahead', 'time_ahead': time_ahead})
