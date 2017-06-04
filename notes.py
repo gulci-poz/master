@@ -628,3 +628,42 @@ except Publisher.DoesNotExist:
     print('no data')
 else:
     print(f'data ok: {apress}')
+
+# domyślne sortowanie można określić w modelu, w klasie meta (lista ordering)
+# nadal możemy explicite określić sortowanie przy wyciąganiu danych
+Publisher.objects.order_by('-name', 'state_province')
+
+# chaining lookupów
+Publisher.objects.filter(country='U.S.A.').order_by('-name')
+
+# nie jest obsługiwane indeksowanie ujemne (AssertionError)
+# slicing; SQL: LIMIT 1
+Publisher.objects.order_by('name')[0]
+# slicing; SQL: OFFSET 0 LIMIT 1
+Publisher.objects.order_by('name')[0:2]
+
+# update tylko jednego pola (z save() jest update wszystkich pól, możemy mieć
+# race condition, inny proces może zmieniać inne kolumny)
+# update() działa na QuerySet, musimy użyć filter()
+# zwraca integer - liczbę zmienionych rekordów
+Publisher.objects.filter(id=1).update(name='Apress Publishing')
+Publisher.objects.filter(country='U.S.A.').update(country='USA')
+
+for pub in Publisher.objects.all():
+    print(f'{pub.name}, {pub.country}')
+
+# usuwanie
+# zwraca krotkę z liczbą rekordów, które będą usunięte
+# oraz słownikiem zawierającym model (key)
+# i liczbę rekordów usuniętych z tego modelu (value)
+# (dla każdego dotkniętego modelu)
+# można też usunąć kilka rekordów - delete() na QuerySet (rezultat filter())
+p = Publisher.objects.get(name='O\'Reilly')
+p.delete()
+Publisher.objects.filter(country='USA').delete()
+
+# dostaniemy AttributeError - obiekt managera nie ma atrybutu delete
+Publisher.objects.delete()
+# jeśli chcemy usunąć wszystko musimy explicite użyć all() na managerze
+# jeśli usuwamy podzbiór, to all() nie jest konieczne, wystarczy np. filter()
+Publisher.objects.all().delete()
