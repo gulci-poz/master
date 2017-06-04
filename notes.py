@@ -540,3 +540,32 @@ print(r)
 # argumentem do extends może być zmienna
 # (dynamiczne ładowanie szablonu w runtime)
 # mamy szukanie po APP_DIRS i DIRS
+
+# modele mudzą istniejć wewnątrz aplikacji django
+# model to data layout - odpowiednik instrukcji SQL CREATE TABLE
+# model daje wiecej możliwości niż czysty SQL
+# introspekcja bazy w runtime dawałaby zbyt duży narzut (overhead)
+# dzięki modelowi możemy wersjonować layout danych
+# synchronizacja modelu i bazy danych - migracje
+# w django można wygenerować model poprzez introspekcję bazy danych
+# jedna klasa (model) to jedna tabela bazy danych
+# wyjątkiem jest relacja m2m
+# nie dostajemy kolumny, django tworzy dodatkową tabelę join dla m2m
+# domyślnie django tworzy pole iteger id, które jest auto-increment pk
+# jest wymagane, żeby każdy model django miał jednokolumnowy pk
+# walidacja modelu:
+# -> python manage.py check
+# jest to check framework django
+# zestaw statycznych checków do walidacji projektu django
+# wyłapuje problemy z modelami
+# informujemy, że zrobiliśmy zmiany w modelu danych:
+# -> python manage.py makemigrations books
+# wyświetlamy kod SQL, który zostanie wykonany przez daną migrację
+# -> python manage.py sqlmigrate books 0001
+# domyślnie nazwa tabeli to nazwa aplikacji + nazwa modelu (można to zmienić)
+# django generuje pk - pole id (można to zmienić)
+# django dodaje _id do nazwy klucza obcego (można to zmienić)
+# relacja klucza obcego jest tworzona explicite przez instrukcję REFERENCES
+# aktualizacja schematu bazy danych na podstawie osatniego pliku migracji
+# (wykonanie kodu SQL z sqlmigrate)
+# -> python manage.py migrate
