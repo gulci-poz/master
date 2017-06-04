@@ -543,7 +543,7 @@ print(r)
 
 # modele mudzą istniejć wewnątrz aplikacji django
 # model to data layout - odpowiednik instrukcji SQL CREATE TABLE
-# model daje wiecej możliwości niż czysty SQL
+# model daje wiecej możliwości niż czysty SQL (np. dodanie zachowania)
 # introspekcja bazy w runtime dawałaby zbyt duży narzut (overhead)
 # dzięki modelowi możemy wersjonować layout danych
 # synchronizacja modelu i bazy danych - migracje
@@ -569,3 +569,62 @@ print(r)
 # aktualizacja schematu bazy danych na podstawie osatniego pliku migracji
 # (wykonanie kodu SQL z sqlmigrate)
 # -> python manage.py migrate
+
+# -> python manage.py shell
+
+from books.models import Publisher
+
+# jeśli chcemy od razu zapisać obiekt w bazie, to używamy
+# Publisher.objects.create()
+
+p1 = Publisher(name='Apress', address='2855 Telegraph Avenue', city='Berkeley',
+               state_province='CA', country='U.S.A.',
+               website='http://www.apress.com/')
+# INSERT INTO
+p1.save()
+p2 = Publisher(name="O'Reilly", address='10 Fawcett St.', city='Cambridge',
+               state_province='MA', country='U.S.A.',
+               website='http://www.oreilly.com/')
+p2.save()
+
+# SELECT
+# django nie robi SELECT * tylko explicite podaje każde pole
+# managery zajmują się wszystkimi operacjami na danych na poziomie tabeli
+publisher_list = Publisher.objects.all()
+publisher_list
+
+# możemy odczytać id
+publisher_list[0].id
+# możemy odczytać pk
+publisher_list[0].pk
+
+# __str__ dodaje zachowanie do modelu
+# __str__ musi zwracać stringa, w przeciwnym razie python wyrzuci TypeError
+
+p = Publisher(name='GNW Independent Publishing', address='123 Some Street',
+              city='Hamilton', state_province='NSW', country='AUSTRALIA',
+              website='http://djangobook.com/')
+p.save()
+
+p.name = 'GNW Independent Publishing'
+# UPDATE - kolejne wywołania save robią UPDATE
+# będzie update wszystkich pól (możemy mieć race condition)
+p.save()
+
+# WHERE
+Publisher.objects.filter(name='Apress')
+Publisher.objects.filter(country='U.S.A.', state_province='CA')
+# LIKE
+Publisher.objects.filter(name__contains='press')
+
+# wyciąganie pojedynczego obiektu, a nie QuerySet
+# wyjątek w przypadku wielu obiektów (MultipleObjectsReturned)
+# wyjątek w przypadku braku obiektu (DoesNotExist)
+# Publisher.DoesNotExist - jest to atrybut klasy modelu
+# trzeba używać try
+try:
+    apress = Publisher.objects.get(name='Apress')
+except Publisher.DoesNotExist:
+    print('no data')
+else:
+    print(f'data ok: {apress}')
