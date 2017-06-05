@@ -683,3 +683,21 @@ Publisher.objects.all().delete()
 # wtedy trzeba określić w modelu null=True
 # w przypadku takich wartości trzeba podać zarówno null jak i blank
 # nie kapitalizujemy verbose_name, chyba, że zawsze ma być z wielkiej litery
+
+# sortowanie w klasach ModelAdmin używa do sortowania
+# tylko pierwszego pola z podanej listy
+# jeśli nie podamy ordering w ModelAdmin, to brane jest ordering z modelu
+# formularz edycji
+# fields określa kolejność wyświetlania pól na formularzu edycji
+# domyślnie brana jest kolejność z modelu
+# jeśli nie podamy jakiegoś pola, to będzie ono wykluczone z wyświetlania
+# trzeba się upewnić, że takie pole ma null=True,
+# ponieważ przy dodawaniu rekordu django będzie ustawiać null
+# filter_horizontal - dla pola m2m (nie działa dla foreign key),
+# poziome listy z dostępnymi i dodanymi wartościami
+# (zamiast multiple-select boksów)
+# filter_horizontal można używać dla wielu pól
+# mamy też filter_vertical
+# dla foreign key mamy raw_id_fields (działa też z m2m),
+# django nie ładuje wtedy wszystkich wartości przy rozwijaniu select boksa
+# w raw_id_fields mamy wartości id po przecinku
