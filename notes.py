@@ -701,3 +701,26 @@ Publisher.objects.all().delete()
 # dla foreign key mamy raw_id_fields (działa też z m2m),
 # django nie ładuje wtedy wszystkich wartości przy rozwijaniu select boksa
 # w raw_id_fields mamy wartości id po przecinku
+
+# flagi użytkownika - active, staff (logowanie do interfejsu admina),
+# superuser (permissions są ignorowane)
+# możmy zarządzać dostępem tym samym kontem do innych aplikacji,
+# flaga staff rozróżnia publicznych użytkowników
+# (mogą być tak naprawdę "adminami" innych aplikacji) i adminów (mają włączoną)
+# każdy obiekt ma 3 uprawnienia do ustawienia: create, edit, delete
+# uprawnienia są na model, a nie na instancję (da się to zrobić)
+# implicite superuser - gdy nadamy użytkownikowi uprawnienie do edycji uprawnień
+
+# aplikacja admin jest dla użytkowników nietechnicznych,
+# którzy będą wprowadzali dane
+# model jest tworzony w uzgodnieniu z developerem,
+# na podstawie wprowadzonych danych developer tworzy view i template,
+# dla strony, która będzie dostępna na zewnątrz
+# admin może też służyć do:
+# - testowania/inspekcji modelu - wprowadzanie przykładowych danych,
+# żeby sprawdzić, czy model zachowuje się tak jak planowaliśmy
+# - wygodne zarządzanie i edycja danych (np. dane wprowadzone przez użytkownika)
+# - budowanie prostej aplikacji do zarządzania danymi
+# aplikacja admin nie jest w zamierzeniu publicznym interfejsem do danych
+# jest to aplikacja do administracji i edycji strony
+# przez uprawnionych użytkowników
