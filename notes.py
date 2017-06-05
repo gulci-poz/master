@@ -667,3 +667,19 @@ Publisher.objects.delete()
 # jeśli chcemy usunąć wszystko musimy explicite użyć all() na managerze
 # jeśli usuwamy podzbiór, to all() nie jest konieczne, wystarczy np. filter()
 Publisher.objects.all().delete()
+
+# django na starcie uruchamia admin.autodiscover()
+# ta funkcja iteruje po INSTALLED_APPS
+# i uruchamia napotkane pliki admin.py
+# django.contrib.auth ma swój plik admin.py (widzimy użytkowników i grupy)
+# nie zmieniamy widoków, szablonów i urli bezpośrednio w instalacji django
+
+# informacja blank=True dotyczy formularza w django admin, a nie bazy
+# nie trzeba robić migracji
+# django wszystkie kolumny definiuje jako NOT NULL
+# wartość NULL w SQL umożliwia wstawienie pustego stringa
+# data, czas, liczby - nie akceptują pustego stringa,
+# (DateField, TimeField, DateTimeField, IntegerField, DecimalField, FloatField)
+# wtedy trzeba określić w modelu null=True
+# w przypadku takich wartości trzeba podać zarówno null jak i blank
+# nie kapitalizujemy verbose_name, chyba, że zawsze ma być z wielkiej litery
