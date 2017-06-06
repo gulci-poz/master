@@ -4,7 +4,8 @@ from django.contrib import admin
 from .views import (hello, current_datetime, hours_ahead, order_notice,
                     current_datetime_get_template,
                     current_datetime_render_shortcut, greeting, utilities_time,
-                    utilities_time_ahead)
+                    utilities_time_ahead, utilities_request,
+                    utilities_display_meta)
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -18,4 +19,7 @@ urlpatterns = [
     url(r'^greeting/$', greeting),
     url(r'^utilities/time/$', utilities_time),
     url(r'^utilities/time/plus/(\d{1,2})/$', utilities_time_ahead),
+    # /utilities/request/?bla=bla&name=user
+    url(r'^utilities/request/$', utilities_request),
+    url(r'^utilities/request/meta/$', utilities_display_meta),
 ]

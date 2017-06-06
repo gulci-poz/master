@@ -122,3 +122,44 @@ def utilities_time_ahead(request, offset):
     time_ahead = datetime.now() + timedelta(hours=offset)
     return render(request, 'utilities/time_ahead.html',
                   {'current_section': 'time ahead', 'time_ahead': time_ahead})
+
+
+def utilities_request(request):
+    # generator
+    req_iter = request.GET.items()
+
+    # GET i POST to obiekty dictionary-like
+
+    return render(request, 'utilities/request_object.html',
+                  {
+                      'current_section': 'request_object',
+                      'rmethod': request.method,
+                      'rgetlen': len(request.GET),
+                      'rget': request.GET,
+                      # /utilities/request/?bla=bla&name=user
+                      'rgetitems': next(req_iter),
+                      'rgetitems2': next(req_iter),
+                      'rgetbla': request.GET.get('bla'),
+                      'rgetbladict': request.GET['bla'],
+                      'rpath': request.path,
+
+                      # przekazujemy metody
+                      'rhost': request.get_host,
+                      'rfull': request.get_full_path,
+                      'rsecure': request.is_secure,
+
+                      'rmeta': request.META,
+                      'rmetakeys': request.META.keys(),
+
+                      'rreferer': request.META.get('HTTP_REFERER', 'unknown'),
+                      'ragent': request.META.get('HTTP_USER_AGENT', 'unknown'),
+                      'raddr': request.META.get('REMOTE_ADDR', 'unknown'),
+                  })
+
+
+def utilities_display_meta(request):
+    meta_values = sorted(request.META.items())
+
+    return render(request, 'utilities/request_meta.html',
+                  {'current_section': 'request_meta',
+                   'meta_values': meta_values})

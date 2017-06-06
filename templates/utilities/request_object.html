@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}
+    Request object
+{% endblock %}
+{% block content %}
+    <p>request.method: {{ rmethod }}</p>
+    <p>len(request.GET): {{ rgetlen }}</p>
+    <p>request.GET: {{ rget }}</p>
+    <p>next(request.GET.items()): {{ rgetitems }}</p>
+    <p>next(request.GET.items()): {{ rgetitems2 }}</p>
+    <p>request.GET.get('bla'): {{ rgetbla }}</p>
+    <p>request.GET['bla']: {{ rgetbladict }}</p>
+    <p>request.path: {{ rpath }}</p>
+    {# przekazujemy metody, wywołania będą tutaj #}
+    <p>request.get_host(): {{ rhost }}</p>
+    <p>
+        request.get_full_path() (with query string, if available): {{ rfull }}
+    </p>
+    <p>request.is_secure() - HTTPS: {{ rsecure }}</p>
+
+    {# zależy, które nagłówki wysyła użytkownik i które ustawia web server #}
+    {# klucz może nie istnieć, jest to słownik, więc dostaniemy KeyError #}
+    {# praktykujemy gracefull failure #}
+    {# używamy get i dodatkowego parametru 'unknown' z alternatywnym wynikiem #}
+    {# lub try z except KeyError #}
+    {# zamiast bezpośredniego dostępu przez [] #}
+
+    {#    <p>request.META - (dict) HTTP headers for given request: {{ rmeta }}</p>#}
+
+    {#    <p>request.META.keys(): {{ rmetakeys }}</p>#}
+
+    {# referujący url #}
+    <p>request.META.get('HTTP_REFERER', 'unknown'): {{ rreferer }}</p>
+
+    {# przeglądarka #}
+    <p>request.META.get('HTTP_USER_AGENT', 'unknown'): {{ ragent }}</p>
+
+    {# adres IP klienta, może być kilka IP, jeśli request idzie przez proxy #}
+    <p>request.META.get('REMOTE_ADDR', 'unknown'): {{ raddr }}</p>
+{% endblock %}
