@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 from django.contrib import admin
 
 from .views import (hello, current_datetime, hours_ahead, order_notice,
@@ -22,4 +22,6 @@ urlpatterns = [
     # /utilities/request/?bla=bla&name=user
     url(r'^utilities/request/$', utilities_request),
     url(r'^utilities/request/meta/$', utilities_display_meta),
+    # apps urls root
+    url(r'^books/', include('books.urls', namespace='books')),
 ]

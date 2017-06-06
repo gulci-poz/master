@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}
+    Books - search result
+{% endblock %}
+{% block content %}
+    <p>{{ message }}</p>
+    <p>Query: <em>{{ query }}</em></p>
+    <p>Found <em>{{ result|length }}</em> book{{ book|pluralize }}:</p>
+    <ul>
+        {% for item in result %}
+            <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
