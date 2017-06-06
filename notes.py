@@ -724,3 +724,30 @@ Publisher.objects.all().delete()
 # aplikacja admin nie jest w zamierzeniu publicznym interfejsem do danych
 # jest to aplikacja do administracji i edycji strony
 # przez uprawnionych użytkowników
+
+# formularze
+# f.as_table() - domyślnie - nie uwzględnia <table></table>
+# f.as_ul() - nie uwzględnia <ul></ul>
+# f.as_p()
+# powyższe outputy nie uwzględniają <form></form>
+# można wyświetlić html dla konkretnego pola
+# dostaniemy same pole input (bez label)
+# f['subject']
+# jeśli przekażemy dane, to otrzymamy powiązany (bound) formularz
+# (bound jest True jeśli podamy choć jeden dowolny atrybut, może to być '')
+# f = ContactForm({'subject': 'cmt', 'email': 'sth@sth.com', 'message': 'msg'})
+# f.is_bound
+# formularz (również pusty) można walidować
+# f.is_valid()
+# mamy dostęp do błędów poszczególnych pól
+# (lista errors jest pusta dla wszystkich pól jeśli formularz nie jest bound)
+# f = ContactForm({'subject': 'cmt', 'message': ''})
+# f['message'].errors
+# domyślnie puste errors dla nieprawidłowego maila
+# (bez @ i domeny, pusty string)
+# jeśli formularz jest bound to mamy słownik errors
+# f.errors
+# formularz, który jest valid ma dostępny atrybut cleaned_data
+# f.cleaned_data
+# jest to słownik z przesłanymi danymi,
+# wartości są przekonwertowane do typów pythonowych

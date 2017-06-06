@@ -3,8 +3,10 @@
     Books - search form
 {% endblock %}
 {% block content %}
-    {% if error %}
-        <p style="color: red;">Please submit a search term.</p>
+    {% if errors %}
+        {% for error in errors %}
+            <li style="color: red; list-style-type: none;">{{ error }}</li>
+        {% endfor %}
     {% endif %}
     <form action="" method="get">
         <input type="text" name="q">

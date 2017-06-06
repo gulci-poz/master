@@ -4,13 +4,15 @@ from .models import Book
 
 
 def books_search(request):
-    error = False
+    errors = []
 
     if 'q' in request.GET:
         q = request.GET['q']
 
         if not q:
-            error = True
+            errors.append('Enter a search term.')
+        elif len(q) > 20:
+            errors.append('Please enter at most 20 characters.')
         else:
             result = Book.objects.filter(title__icontains=q)
             return render(request, 'books/search_result.html',
@@ -21,5 +23,5 @@ def books_search(request):
 
     return render(request, 'books/search_form.html',
                   {'current_section': 'books-search-form',
-                   'error': error
+                   'errors': errors
                    })
