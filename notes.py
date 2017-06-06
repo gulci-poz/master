@@ -743,11 +743,21 @@ Publisher.objects.all().delete()
 # (lista errors jest pusta dla wszystkich pól jeśli formularz nie jest bound)
 # f = ContactForm({'subject': 'cmt', 'message': ''})
 # f['message'].errors
-# domyślnie puste errors dla nieprawidłowego maila
-# (bez @ i domeny, pusty string)
+# domyślnie puste errors dla maila z pustym stringiem
+# formularz jest poprawny z pustym stringiem w mailu
 # jeśli formularz jest bound to mamy słownik errors
 # f.errors
 # formularz, który jest valid ma dostępny atrybut cleaned_data
 # f.cleaned_data
 # jest to słownik z przesłanymi danymi,
 # wartości są przekonwertowane do typów pythonowych
+
+# backendy emailowe
+# filebased - wysyłanie maila do pliku w lokalnym systemie plików
+# locmem - zapisywanie maila do atrybutu w pamięci
+# dummy - wysyłanie maila do dummy backend
+# w przypadku HTML5 przeglądarki mogą walidować formularze
+# dajemy novalidate, chcemy, żeby django robiło walidację
+# fields - logika walidacji
+# widgets - logika prezentacji
+# z danymi initial formularz nie jest bound, nie będzie błędów

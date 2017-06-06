@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}
+    Contact - contact form
+{% endblock %}
+{% block content %}
+    <h1>Contact form</h1>
+    {% if form.errors %}
+        <p style="color: red;">
+            Please correct the error{{ form.errors|pluralize }} below.
+        </p>
+    {% endif %}
+    <form action="" method="post" novalidate>
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit" value="Submit">
+    </form>
+{% endblock %}

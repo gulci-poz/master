@@ -24,4 +24,5 @@ urlpatterns = [
     url(r'^utilities/request/meta/$', utilities_display_meta),
     # apps urls root
     url(r'^books/', include('books.urls', namespace='books')),
+    url(r'^contact/', include('contact.urls', namespace='contact')),
 ]
