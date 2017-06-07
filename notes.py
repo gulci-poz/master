@@ -761,3 +761,22 @@ Publisher.objects.all().delete()
 # fields - logika walidacji
 # widgets - logika prezentacji
 # z danymi initial formularz nie jest bound, nie będzie błędów
+
+# walidacja komentarzy
+# jeśli będziemy chcieli ponownie użyć zdefiniowanej zasady,
+# to warto pomyśleć o stworzeniu nowego typu pola
+# do jednorazowego użytku możemy związać walidację z klasą Form
+# używamy metody clean_message() w klasie ContactForm
+# framework formularzy django szuka metod o nazwie rozpoczynającej się
+# od clean_ z dodatkiem nazwy pola, np. clean_message
+# takie metody są uruchamiane w trakcie walidacji, po uruchomieniu
+# głównej ligiki walidacyjnej dla danego pola (tutaj walidacja pola CharField)
+# dane z pola już są częściowo przetworzone, więc używany self.cleaned_data
+# domyślny walidator sprawdza istnienie i non-empty
+# musimy pamiętać o return z oczyszczoną wartością,
+# inaczej będzie zwrócone None i stracimy dane
+
+# możemy za pomocą szablonu sami zbudować formularz
+# mamy dostęp do pól formularza za pomocą {{ form.fieldname }}
+# oraz do powiązanych błędów {{ form.fieldname.errors }}
+# listę form.fieldname.errors możemy traktować jako boolean lub iterować po niej
