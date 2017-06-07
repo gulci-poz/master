@@ -780,3 +780,105 @@ Publisher.objects.all().delete()
 # mamy dostęp do pól formularza za pomocą {{ form.fieldname }}
 # oraz do powiązanych błędów {{ form.fieldname.errors }}
 # listę form.fieldname.errors możemy traktować jako boolean lub iterować po niej
+
+# urlconfs
+# wyrażenia z urlconf są sprawdzane po kolei, dlatego specjalne przypadki
+# warto zamieszczać przed genrycznymi dopasowaniami
+# wybierane jest pierwsze dopasowanie
+
+# nazywamy grupę za pomocą (?P<name>pattern),
+# możemy przekazywać nienazwany argument (pattern)
+
+# algorytm:
+# jeśli istnieją nazwane argumenty, to zostaną one użyte,
+# nienazwane argumenty zostaną zignorowane
+# jeśli nie ma nazwanych argumentów,
+# to nienazwane zostaną przekazane jako pozycyjne
+# w obu przypadkach będą przekazane dodatkowe argumenty keyword
+
+# dopasowanie jest do urla - bez domeny i parametrów metody
+# urlconf nie bierze pod uwagę metody, żądania za pomocą dowolnej metody
+# będą routowane do tej samej funkcji dla danego urla
+
+# bez względu na typ znaków w dopasowaniu (np. integery),
+# argument zostanie przekazany do widoku jako string
+
+# w widoku możemy określić domyślną wartość nazwanego argumentu
+# jeśli dwa dopasowania są obsługiwane tą samą funkcję widoku
+# pierwsze może nie uwzględniać żadnej wartości,
+# wtedy przydaje się wartość domyślna
+
+# każde wyrażenie regularne z urlconf jest kompilowane przy pierwszym dostępie
+
+# w razie niedopasowania lub wyjątku istnieją specjalne widoki określone
+# przez zmienne: handler404, handler500, handler403, handler400
+# wartości muszą być nadane w root urlconf
+# muszą to być callable lub string reprezentujący full import path do widoku
+# widok musi zwracać HttpResponseNotFound
+# niestandardowa obsługa błędów działa tylko z DEBUG=False
+
+# inkludowane urle mogą pochodzić z dodatkowej listy w tym samym pliku
+# w include() podajemy nazwę zmiennej zawierającej tablicę
+# dodatkowa tablica zawiera urle relatywne do nadrzędnego
+# możemy też ustalić wspólny prefix i za pomocą include pogrupować sufiksy
+# (inline lub w zmiennej)
+# inkludowany urlconf ma dostęp do wszystkich przechwyconych parametrów
+
+# możemy przekazać trzeci argument do widoku - słownik z metadanymi
+# w razie takiej samej nazwy jak przechwycony argument
+# argument ze słownika ma pierwszeństwo
+
+# opcjonalny słownik można przekazać również w include
+# będzie on przekazany do każdej linii url inkludowanego pliku (listy),
+# a zatem do widoku, który to dopasowanie obsługuje
+# (ponieważ ten słownik będzie trzecim argumentem do funkcji url())
+# słownik będzie zawsze przekazany do widoku, bez względu na to,
+# czy ten widok akceptuje taki argument, więc trzeba uważać
+
+# URL reversing
+# nie kodujemy urli na twardo ani nie robimy równoległych mechanizmów ad-hoc
+# do uzyskiwania urli, design urli ma być w urlconf - tam wszystkie zmiany urli
+# ważna jest nazwa widoku, typy argumentów i ich wartości
+# templates: tag url
+# kod python: funkcja django.core.urlresolvers.reverse()
+# kod (hi-level) obsługi urli dla instancji modeli: metoda get_absolute_url()
+
+# reverse_lazy() pozwala na uzyskanie urla przed załadowaniem urlconf
+# wykorzystanie: pozyskiwanie atrybutu url dla generycznego widoku opartego
+# na klasie; argument dla dekoratora; domyślna wartość dla signature funkcji
+
+# jeden widok może być wykorzystywany przez kilka urli,
+# dlatego trzeba nazywać urle
+
+# dodatkowo używamy namespaces (również dla wielu instancji jednej aplikacji)
+# np. klasa AdminSite pozwala na deploy kilku instancji aplikacji admin
+# mamy namespace aplikacji - taki sam dla każdej instancji
+# mamy namespace instancji - unikalny w projekcie, domyślna wersja instancji
+# może mieć taką samą namespace jak aplikacja, np. admin ma admin i admin
+# główna strona admina to admin:index
+# namespaces można zagnieżdżać, np. members:reviews:index,
+# gdzie namespace reviews jest zdefiniowana w obrębie namespace members
+
+# przeszukiwanie namespacowanego urla
+# - namespace aplikacji - z tego django dostanie listę instancji
+# - jeśli jest zdefiniowana current, django zwraca resolver dla tej instancji
+# aplikacja, które ma mieć wiele instacji powinna mieć atrybut
+# current_app na przetwarzanym requeście (admin ma request.current_app)
+# - może być to również argument dla funkcji reverse()
+# - jeśli nie ma current, to django szuka domyślnej (nsp app = nsp inst)
+# (w przykładzie reviews jest nsp aplikacji i instancji)
+# - jeśli nie ma default, django bierze nazwę ostatnio zdeployowanej instancji
+# - jeśli taka nsp nie zgadza się z nsp aplikacji z pierwszego kroku,
+# django będzie wyszukiwać bezpośrednio tę nsp jako nsp instancji
+# -> dla zagnieżdżonych nsp kroki są przetwarzane dla każdej nsp
+
+# namespaces i inkludowane urlconfigi
+# jako argument do inlude: namespace i app_name
+# ~ można inkludować obiekt z zagnieżdżonymi danymi namespace
+# (app_name może być zmienną w inkludowanym pliku urls)
+# inkludowana lista będzie włączona do globalnej namespace, chyba, że
+# do include przekażemy krotkę (lista, app_nsp, inst_nsp)
+# (musi to być krotka, bo inaczej będą to nienazwane argumenty
+# namespace i app_name - jak powyżej; nie będzie wyrzucony wyjątek)
+# - admin jest instancją AdminSite, w include podajemy admin.site.urls
+# jest to właśnie 3-krotka, zawarta w klasie AdminSite

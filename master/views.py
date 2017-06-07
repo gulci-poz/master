@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
-from django.http import Http404, HttpResponse
+from django.core.urlresolvers import reverse
+from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
 from django.template import Context, Template
 from django.template.loader import get_template
@@ -16,7 +17,7 @@ def current_datetime(request):
     return HttpResponse(html)
 
 
-def hours_ahead(request, offset):
+def hours_ahead(request, offset=1):
     # loose coupling - urlconf sprawdza wzorzec, ale nie robimy założenia,
     # że zawsze tak będzie, widok tak naprawdę nie wie co dostaje
     try:
@@ -113,7 +114,7 @@ def utilities_time(request):
                   {'current_section': 'time', 'current_date': now})
 
 
-def utilities_time_ahead(request, offset):
+def utilities_time_ahead(request, offset=1):
     try:
         offset = int(offset)
     except ValueError:
@@ -163,3 +164,16 @@ def utilities_display_meta(request):
     return render(request, 'utilities/request_meta.html',
                   {'current_section': 'request_meta',
                    'meta_values': meta_values})
+
+
+def debug(request):
+    return HttpResponse('<html><body><p>Debug view</p></body></html>')
+
+
+def handler404(request):
+    return HttpResponseNotFound('<html><body><p>Ooops... 404</p></body></html>')
+
+
+def testing(request, num, meta):
+    url_resolved = reverse('testing', args=(0,))
+    return HttpResponse(f'{num} - {meta} - {url_resolved}')
