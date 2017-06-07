@@ -17,5 +17,14 @@ każdy include to oddzielny proces renderowania szablonu
 bloki są przetwarzane przez inkludowaniem
 {% endcomment %}
 {% include included_template %}
+{% comment %}
+escaping dla HTML przed przekazaniem na output, z wcześniej wykonanymi filtrami
+alternatywnie można dać filtr escape każdej zmiennej
+nie działa ze zmiennymi, które w kodzie pythona są oznaczone safe
+lub mają filtr safe bądź już zastosowany filtr escape
+{% endcomment %}
+{% autoescape on %}
+    autoescape{{ sample_html|upper }}autoescape
+{% endautoescape %}
 </body>
 </html>

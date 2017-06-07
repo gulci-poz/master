@@ -103,9 +103,11 @@ def current_datetime_render_shortcut(request):
 
 
 def greeting(request):
+    sample_html = '<h2>hello</h2>'
     return render(request, 'greeting.html',
                   {'included_template': 'includes/nav.html',
-                   'current_section': 'greeting'})
+                   'current_section': 'greeting',
+                   'sample_html': sample_html})
 
 
 def utilities_time(request):
