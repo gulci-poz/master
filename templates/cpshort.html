@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}
+    Context processors
+{% endblock %}
+{% block content %}
+    <ul>
+        <li>{{ user }}</li>
+        {# dostajemy zbiór #}
+        <li>{{ perms.get }}</li>
+        {# DEBUG musi być True #}
+        {# do settings trzeba dodać listę #}
+        {# INTERNAL_IPS #}
+        {# musi ona zawierać adres requesta request.META['REMOTE_ADDR'] #}
+        <li>{{ debug }}</li>
+        {# po dodaniu do context_processors w setting nie potrzebujemy cp #}
+        <li>{{ app }}</li>
+        <li>{{ ip_address }}</li>
+    </ul>
+{% endblock %}

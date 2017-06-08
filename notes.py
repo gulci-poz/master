@@ -146,6 +146,7 @@ print(t.render(Context({'p': p})))
 # w settings.py, w TEMPLATES, w słowniku OPTIONS
 # różne aplikacje korzystają z tego ustawienia,
 # więc lepiej zostawić (przynajmniej w produkcji) pusty string
+# DEBUG musi być False
 
 
 class SilentAssertionError(Exception):
@@ -668,6 +669,7 @@ Publisher.objects.delete()
 # jeśli usuwamy podzbiór, to all() nie jest konieczne, wystarczy np. filter()
 Publisher.objects.all().delete()
 
+
 # django na starcie uruchamia admin.autodiscover()
 # ta funkcja iteruje po INSTALLED_APPS
 # i uruchamia napotkane pliki admin.py
@@ -882,3 +884,54 @@ Publisher.objects.all().delete()
 # namespace i app_name - jak powyżej; nie będzie wyrzucony wyjątek)
 # - admin jest instancją AdminSite, w include podajemy admin.site.urls
 # jest to właśnie 3-krotka, zawarta w klasie AdminSite
+
+# advanced templates
+# - template - dokument lub zamarkowany string
+# - template tag - produkuje zawartość, służy jako instrukcja sterująca,
+# pobiera zawartość z bazy danych, umożliwia dostęp do innych tagów
+# - template variable - outputuje wartość
+# - context - mapowanie name->value przekazane do szablonu, podobne do słownika
+# - szablon renderuje kontekst zamieniając zmienne na wartości z kontekstu
+# oraz wykonując tagi
+# django potrzebuje kontekstu - django.template.Context,
+
+# jest też podklasa django.template.RequestContext
+# zawiera ona dodatkowe zmienne, np. obiekt HttpRequest
+# lub informacje o zalogowanym użytkowniku (opcja context_processors)
+
+# !!! skrót render() zwraca HttpResponse (nie RequestContext)
+# funkcji render() z Template możemy przekazać obiekt RequestContext
+
+# context processors - umożliwiają podanie zmiennych, które będą automatycznie
+# ustawiane w każdym kontekście
+# żeby skorzystać z custom CP musimy używać RequestContext
+# przykład: widoki cp i cpshort
+
+# RequestContext ładuje automatycznie do kontekstu pewne zmienne
+# w settings, w TEMPLATES, jest opcja context_processors,
+# są to callable, które pobierają request i zwracają słowniki
+# ze zmiennymi, które będą częścią kontekstu
+# domyślnie jest też uwzględniony cp django.template.context_processors.csrf
+# jest on hardcoded i nie może być wyłączony
+# procesory są aplikowane w porządku, kolejne zmienne o tej samej nazwie
+# zastępują wcześniejsze
+# zmienne zaaplikowane przez cp mogą zastąpić zmienne przekazane przez nas
+# do RequestContext
+# można to obejść
+# request_context = RequestContext(request)
+# request_context.push({"my_name": "john"})
+# custom templates muszą być wymienione w opcji context_processors
+# wtedy stają się one globalne
+# również w TEMPLATES można określić loadery (loaders)
+# w opcji loaders można każdemu loaderowi przypisać folder z szablonami (1.11)
+# włączone są loadery z DIRS (django.template.loaders.filesystem.Loader)
+# i APP_DIRS (django.template.loaders.app_directories.Loader)
+# w produkcji jest włączony cache loader (django.template.loaders.cached.Loader)
+# Template możemy używać jeśli deklarujemy korzystanie z jednego
+# silnika szablonów, w przeciwnym wypadku używamy get_template()
+
+# render()
+# django.template.Template - przyjmuje kontekst: słownik|Context|RequestContext
+# django.template.backends.django.Template - przyjmuje: request, context (dict!)
+# render() z django.shortcuts - opakowuje powyższy, dodatkowo przyjmuje template
+# render_to_response() - content responsa nie zawiera danych requesta

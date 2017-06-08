@@ -36,6 +36,9 @@ urlpatterns = [
     # testing
     url(r'^testing/(?P<num>\d?)$', master_views.testing,
         {'meta': 'testing'}, name='testing'),
+    url(r'^cp/$', master_views.cp, name='cp'),
+    url(r'^cpshort/$', master_views.cpshort, name='cpshort'),
+    url(r'^cpglobal/$', master_views.cpglobal, name='cpglobal'),
 ]
 
 if settings.DEBUG:

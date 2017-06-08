@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponse, HttpResponseNotFound
 from django.shortcuts import render
-from django.template import Context, Template
+from django.template import Context, Template, RequestContext
 from django.template.loader import get_template
 
 
@@ -82,7 +82,7 @@ def current_datetime_get_template(request):
     now = datetime.now()
 
     # dostajemy skompilowany obiekt Template
-    # jest to obiekt django.template.backends.base.Template
+    # jest to obiekt django.template.backends.django.Template
     # (zależny od backendu)
     # jest to inny obiekt niż django.template.Template
     # tutaj metoda render przyjmuje słownik, a nie Context
@@ -179,3 +179,39 @@ def handler404(request):
 def testing(request, num, meta):
     url_resolved = reverse('testing', args=(0,))
     return HttpResponse(f'{num} - {meta} - {url_resolved}')
+
+
+def custom_cp(request):
+    return {
+        'app': 'My App',
+        'ip_address': request.META['REMOTE_ADDR']
+    }
+
+
+def cp(request):
+    # jeśli chcemy do render() przekazać obiekt RequestContext,
+    # to nie możemy użyć szablonu wygenerowanego przez get_template(),
+    # ponieważ render() na obiekcie django.template.backends.django.Template
+    # przyjmuje słownik
+    # t = get_template('some_template.html')
+
+    t = Template('{{ app }} - {{ user }} - {{ ip_address }}')
+    # możemy użyć nazwanego argumentu processors
+    # ma to być lista lub krotka
+    c = RequestContext(request, {'current_section': 'cp'}, [custom_cp])
+    return HttpResponse(t.render(c))
+
+
+def cpshort(request):
+    # do render() z django.shortcuts możemy przekazać kontekst
+    # w postaci słownika, wartość w słowniku może być callable
+    # nie możemy przekazać RequestContext
+    # w przypadku cp musimy podać argument, więc sami robimy wywołanie
+    # w przypadku np. datetime.now widok sam wywoła funkcję przed renderowaniem
+    return render(request, 'cpshort.html',
+                  {'current_section': 'cpshort', 'cp': custom_cp(request)})
+
+
+def cpglobal(request):
+    return render(request, 'cpglobal.html',
+                  {'current_section': 'cpglobal'})
